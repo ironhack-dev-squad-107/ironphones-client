@@ -4,6 +4,7 @@ import { Switch, Route, NavLink } from "react-router-dom";
 import "./App.css";
 import HomePage from "./components/HomePage";
 import NotFound from "./components/NotFound";
+import RecentPhones from "./components/RecentPhones";
 
 class App extends Component {
   render() {
@@ -17,12 +18,16 @@ class App extends Component {
             <NavLink exact to="/">
               Home
             </NavLink>
+
+            <NavLink to="/recent-phones">New Releases</NavLink>
           </nav>
         </header>
 
         <Switch>
           {/* home page route should ALWAYS have exact on it */}
           <Route exact path="/" component={HomePage} />
+
+          <Route path="/recent-phones" component={RecentPhones} />
 
           {/* 404 route should go LAST */}
           <Route component={NotFound} />
