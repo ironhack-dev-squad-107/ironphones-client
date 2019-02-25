@@ -40,6 +40,8 @@ class RecentPhones extends Component {
       <section className="RecentPhones">
         <h2>New Phone Releases</h2>
 
+        <Link to="/add-phone">Submit a New Phone</Link>
+
         <ul>
           {phoneArray.map(onePhone => {
             return (
