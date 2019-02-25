@@ -5,6 +5,7 @@ import "./App.css";
 import HomePage from "./components/HomePage";
 import NotFound from "./components/NotFound";
 import RecentPhones from "./components/RecentPhones";
+import PhoneDetails from "./components/PhoneDetails";
 
 class App extends Component {
   render() {
@@ -28,6 +29,7 @@ class App extends Component {
           <Route exact path="/" component={HomePage} />
 
           <Route path="/recent-phones" component={RecentPhones} />
+          <Route path="/phone-details/:phoneId" component={PhoneDetails} />
 
           {/* 404 route should go LAST */}
           <Route component={NotFound} />

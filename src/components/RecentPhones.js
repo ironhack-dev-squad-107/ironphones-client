@@ -1,7 +1,13 @@
 import React, { Component } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 import "./RecentPhones.css";
+
+// returns the dynamic URL for phone details
+function getPhoneAddress(phone) {
+  return `/phone-details/${phone._id}`;
+}
 
 class RecentPhones extends Component {
   constructor(props) {
@@ -38,7 +44,11 @@ class RecentPhones extends Component {
           {phoneArray.map(onePhone => {
             return (
               <li key={onePhone._id}>
-                <h3>{onePhone.phoneModel}</h3>
+                <h3>
+                  <Link to={getPhoneAddress(onePhone)}>
+                    {onePhone.phoneModel}
+                  </Link>
+                </h3>
                 <p>by {onePhone.brand}</p>
                 <p>€{onePhone.price}</p>
                 <img src={onePhone.image} />
