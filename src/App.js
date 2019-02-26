@@ -9,6 +9,7 @@ import PhoneDetails from "./components/PhoneDetails";
 import AddPhone from "./components/AddPhone";
 import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
+import { getLogOut } from "./api";
 
 class App extends Component {
   constructor(props) {
@@ -20,6 +21,14 @@ class App extends Component {
 
   updateUser(newUser) {
     this.setState({ currentUser: newUser });
+  }
+
+  logoutClick() {
+    getLogOut().then(response => {
+      console.log("Log Out", response.data);
+      // set the currentUser state to empty
+      this.updateUser(null);
+    });
   }
 
   render() {
@@ -35,8 +44,18 @@ class App extends Component {
             </NavLink>
 
             <NavLink to="/recent-phones">New Releases</NavLink>
-            <NavLink to="/signup-page">Sign Up</NavLink>
-            <NavLink to="/login-page">Log In</NavLink>
+
+            {this.state.currentUser ? (
+              <span>
+                <b>{this.state.currentUser.email}</b>
+                <button onClick={() => this.logoutClick()}>Log Out</button>
+              </span>
+            ) : (
+              <span>
+                <NavLink to="/signup-page">Sign Up</NavLink>
+                <NavLink to="/login-page">Log In</NavLink>
+              </span>
+            )}
           </nav>
         </header>
 
