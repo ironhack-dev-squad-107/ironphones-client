@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 
 import "./SignupPage.css";
+import { postSignUp } from "../api.js";
 
 class SignupPage extends Component {
   constructor(props) {
@@ -8,7 +9,8 @@ class SignupPage extends Component {
     this.state = {
       fullName: "",
       email: "",
-      originalPassword: ""
+      originalPassword: "",
+      currentUser: null
     };
   }
 
@@ -20,50 +22,66 @@ class SignupPage extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    // send the user info to the backend...
+    postSignUp(this.state).then(response => {
+      console.log("Sign Up Result", response.data);
+      this.setState({ currentUser: response.data });
+    });
   }
 
   render() {
+    const { currentUser } = this.state;
     return (
       <section className="SignupPage">
-        <h2>Sign Up</h2>
+        {currentUser ? (
+          <div>
+            <h2>You are signed up!</h2>
+            <p>
+              Welcome, {currentUser.fullName}! Your user ID is{" "}
+              <b>{currentUser._id}</b>.
+            </p>
+          </div>
+        ) : (
+          <div>
+            <h2>Sign Up</h2>
 
-        <form onSubmit={event => this.handleSubmit(event)}>
-          <label>
-            Full Name:
-            <input
-              onChange={event => this.genericOnChange(event)}
-              value={this.state.fullName}
-              name="fullName"
-              type="text"
-              placeholder="Rey"
-            />
-          </label>
+            <form onSubmit={event => this.handleSubmit(event)}>
+              <label>
+                Full Name:
+                <input
+                  onChange={event => this.genericOnChange(event)}
+                  value={this.state.fullName}
+                  name="fullName"
+                  type="text"
+                  placeholder="Rey"
+                />
+              </label>
 
-          <label>
-            Email:
-            <input
-              onChange={event => this.genericOnChange(event)}
-              value={this.state.email}
-              name="email"
-              type="email"
-              placeholder="rey@jedi.com"
-            />
-          </label>
+              <label>
+                Email:
+                <input
+                  onChange={event => this.genericOnChange(event)}
+                  value={this.state.email}
+                  name="email"
+                  type="email"
+                  placeholder="rey@jedi.com"
+                />
+              </label>
 
-          <label>
-            Password:
-            <input
-              onChange={event => this.genericOnChange(event)}
-              value={this.state.originalPassword}
-              name="originalPassword"
-              type="password"
-              placeholder="It's a secret..."
-            />
-          </label>
+              <label>
+                Password:
+                <input
+                  onChange={event => this.genericOnChange(event)}
+                  value={this.state.originalPassword}
+                  name="originalPassword"
+                  type="password"
+                  placeholder="It's a secret..."
+                />
+              </label>
 
-          <button>Sign Up</button>
-        </form>
+              <button>Sign Up</button>
+            </form>
+          </div>
+        )}
       </section>
     );
   }

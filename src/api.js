@@ -7,7 +7,9 @@ import axios from "axios";
 
 // create an Axios object with pre-configured settings
 const backendApi = axios.create({
-  baseURL: "http://localhost:5555"
+  baseURL: "http://localhost:5555",
+  // send cookies to the backend on every request (for logged-in users)
+  withCredentials: true
 });
 
 function errorHandler(err) {
@@ -35,4 +37,10 @@ export function getPhoneDetails(phoneId) {
 
 export function postPhone(newPhoneSubmission) {
   return backendApi.post("/api/phones", newPhoneSubmission).catch(errorHandler);
+}
+
+export function postSignUp(userSubmission) {
+  return backendApi
+    .post("/api/process-signup", userSubmission)
+    .catch(errorHandler);
 }
