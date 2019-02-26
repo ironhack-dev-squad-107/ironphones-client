@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import axios from "axios";
 
 import "./PhoneDetails.css";
+import { getPhoneDetails } from "../api.js";
 
 class PhoneDetails extends Component {
   constructor(props) {
@@ -15,17 +15,12 @@ class PhoneDetails extends Component {
     // get path params from React Router props
     const { params } = this.props.match;
     // use the ID in path params to get the details from the backend API
-    axios
-      .get(`http://localhost:5555/api/phones/${params.phoneId}`)
-      .then(response => {
-        // ALWAYS console.log() response.data to see what the API gave you
-        console.log("Phone Details", response.data);
-        // save the JSON data from the API into the state
-        this.setState({ phoneItem: response.data });
-      })
-      .catch(() => {
-        alert("Sorry! Getting the phone details failed.");
-      });
+    getPhoneDetails(params.phoneId).then(response => {
+      // ALWAYS console.log() response.data to see what the API gave you
+      console.log("Phone Details", response.data);
+      // save the JSON data from the API into the state
+      this.setState({ phoneItem: response.data });
+    });
   }
 
   render() {

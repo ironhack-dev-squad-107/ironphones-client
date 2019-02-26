@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { Redirect } from "react-router-dom";
 
 import "./AddPhone.css";
+import { postPhone } from "../api.js";
 
 class AddPhone extends Component {
   constructor(props) {
@@ -25,17 +25,12 @@ class AddPhone extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    // send this.state (user inputs) to the backend of SAVING!
-    axios
-      .post("http://localhost:5555/api/phones", this.state)
-      .then(response => {
-        console.log("Add Phone", response.data);
-        // update the state for our redirect
-        this.setState({ isSubmitSuccessful: true });
-      })
-      .catch(() => {
-        alert("Sorry! Your phone couldn't be submitted.");
-      });
+    // send this.state (user inputs) to the backend for SAVING!
+    postPhone(this.state).then(response => {
+      console.log("Add Phone", response.data);
+      // update the state for our redirect
+      this.setState({ isSubmitSuccessful: true });
+    });
   }
 
   render() {

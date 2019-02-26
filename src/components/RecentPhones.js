@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import axios from "axios";
 import { Link } from "react-router-dom";
 
 import "./RecentPhones.css";
+import { getPhoneList } from "../api.js";
 
 // returns the dynamic URL for phone details
 function getPhoneAddress(phone) {
@@ -21,17 +21,12 @@ class RecentPhones extends Component {
   // componentDidMount() is called automatically by React when the page loads
   componentDidMount() {
     // get data from our Express API (localhost:5555)
-    axios
-      .get("http://localhost:5555/api/phones")
-      .then(response => {
-        // ALWAYS console.log() response.data to see what the API gave you
-        console.log("Recent Phones", response.data);
-        // save the JSON data from the API into the state
-        this.setState({ phoneArray: response.data });
-      })
-      .catch(() => {
-        alert("Sorry! There was a problem with getting the phone list data.");
-      });
+    getPhoneList().then(response => {
+      // ALWAYS console.log() response.data to see what the API gave you
+      console.log("Recent Phones", response.data);
+      // save the JSON data from the API into the state
+      this.setState({ phoneArray: response.data });
+    });
   }
 
   render() {
