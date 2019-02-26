@@ -14,12 +14,27 @@ import { getLogOut } from "./api";
 class App extends Component {
   constructor(props) {
     super(props);
+
+    // get the initial value of currentUser from localStorage
+    let userInfo = localStorage.getItem("currentUser");
+    if (userInfo) {
+      // turn the string back into an object if we are logged in
+      userInfo = JSON.parse(userInfo);
+    }
     this.state = {
-      currentUser: null
+      currentUser: userInfo
     };
   }
 
   updateUser(newUser) {
+    if (newUser) {
+      // save the user info in localStorage if we are logging IN
+      // (turn it into a JSON string before we save)
+      localStorage.setItem("currentUser", JSON.stringify(newUser));
+    } else {
+      // delete the user info from localStorage if we are logging OUT
+      localStorage.removeItem("currentUser");
+    }
     this.setState({ currentUser: newUser });
   }
 
