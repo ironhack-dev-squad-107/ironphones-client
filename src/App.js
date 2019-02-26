@@ -7,6 +7,8 @@ import NotFound from "./components/NotFound";
 import RecentPhones from "./components/RecentPhones";
 import PhoneDetails from "./components/PhoneDetails";
 import AddPhone from "./components/AddPhone";
+import LoginPage from "./components/LoginPage";
+import SignupPage from "./components/SignupPage";
 
 class App extends Component {
   render() {
@@ -22,6 +24,8 @@ class App extends Component {
             </NavLink>
 
             <NavLink to="/recent-phones">New Releases</NavLink>
+            <NavLink to="/signup-page">Sign Up</NavLink>
+            <NavLink to="/login-page">Log In</NavLink>
           </nav>
         </header>
 
@@ -32,6 +36,8 @@ class App extends Component {
           <Route path="/recent-phones" component={RecentPhones} />
           <Route path="/phone-details/:phoneId" component={PhoneDetails} />
           <Route path="/add-phone" component={AddPhone} />
+          <Route path="/signup-page" component={SignupPage} />
+          <Route path="/login-page" component={LoginPage} />
 
           {/* 404 route should go LAST */}
           <Route component={NotFound} />
