@@ -11,6 +11,17 @@ import LoginPage from "./components/LoginPage";
 import SignupPage from "./components/SignupPage";
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentUser: null
+    };
+  }
+
+  updateUser(newUser) {
+    this.setState({ currentUser: newUser });
+  }
+
   render() {
     return (
       <div className="App">
@@ -36,8 +47,34 @@ class App extends Component {
           <Route path="/recent-phones" component={RecentPhones} />
           <Route path="/phone-details/:phoneId" component={PhoneDetails} />
           <Route path="/add-phone" component={AddPhone} />
-          <Route path="/signup-page" component={SignupPage} />
-          <Route path="/login-page" component={LoginPage} />
+
+          {/* Use render instead of component to send props */}
+          <Route
+            path="/signup-page"
+            render={() => {
+              return (
+                <SignupPage
+                  // send App's currentUser state as a prop to SignupPage
+                  currentUser={this.state.currentUser}
+                  // send App's updateUser() method as a prop for updating state
+                  signupSuccess={user => this.updateUser(user)}
+                />
+              );
+            }}
+          />
+          <Route
+            path="/login-page"
+            render={() => {
+              return (
+                <LoginPage
+                  // send App's currentUser state as a prop to LoginPage
+                  currentUser={this.state.currentUser}
+                  // send App's updateUser() method as a prop for updating state
+                  loginSuccess={user => this.updateUser(user)}
+                />
+              );
+            }}
+          />
 
           {/* 404 route should go LAST */}
           <Route component={NotFound} />

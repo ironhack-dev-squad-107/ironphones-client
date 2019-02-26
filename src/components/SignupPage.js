@@ -9,8 +9,7 @@ class SignupPage extends Component {
     this.state = {
       fullName: "",
       email: "",
-      originalPassword: "",
-      currentUser: null
+      originalPassword: ""
     };
   }
 
@@ -24,12 +23,14 @@ class SignupPage extends Component {
 
     postSignUp(this.state).then(response => {
       console.log("Sign Up Result", response.data);
-      this.setState({ currentUser: response.data });
+      // use the method sent as a prop by App.js to update currentUser
+      this.props.signupSuccess(response.data);
     });
   }
 
   render() {
-    const { currentUser } = this.state;
+    // currentUser is now sent by App.js as a prop
+    const { currentUser } = this.props;
     return (
       <section className="SignupPage">
         {currentUser ? (

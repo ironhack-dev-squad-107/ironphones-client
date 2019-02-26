@@ -9,8 +9,7 @@ class LoginPage extends Component {
     super(props);
     this.state = {
       email: "",
-      originalPassword: "",
-      currentUser: null
+      originalPassword: ""
     };
   }
 
@@ -24,12 +23,14 @@ class LoginPage extends Component {
 
     postLogIn(this.state).then(response => {
       console.log("Log In", response.data);
-      this.setState({ currentUser: response.data });
+      // use the method sent as a prop by App.js to update currentUser
+      this.props.loginSuccess(response.data);
     });
   }
 
   render() {
-    return this.state.currentUser ? (
+    // currentUser is now sent by App.js as a prop
+    return this.props.currentUser ? (
       // returning the <Redirect /> ONLY works inside RENDER
       <Redirect to="/recent-phones" />
     ) : (
