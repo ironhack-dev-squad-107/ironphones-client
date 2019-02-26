@@ -1,13 +1,16 @@
 import React, { Component } from "react";
+import { Redirect } from "react-router-dom";
 
 import "./LoginPage.css";
+import { postLogIn } from "../api.js";
 
 class LoginPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       email: "",
-      originalPassword: ""
+      originalPassword: "",
+      currentUser: null
     };
   }
 
@@ -19,11 +22,17 @@ class LoginPage extends Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    // submit login info to the backend...
+    postLogIn(this.state).then(response => {
+      console.log("Log In", response.data);
+      this.setState({ currentUser: response.data });
+    });
   }
 
   render() {
-    return (
+    return this.state.currentUser ? (
+      // returning the <Redirect /> ONLY works inside RENDER
+      <Redirect to="/recent-phones" />
+    ) : (
       <section className="LoginPage">
         <h2>Log In</h2>
 
