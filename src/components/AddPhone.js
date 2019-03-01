@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 
 import "./AddPhone.css";
-import { postPhone } from "../api.js";
+import { postPhone, postFile } from "../api.js";
 
 class AddPhone extends Component {
   constructor(props) {
@@ -30,6 +30,15 @@ class AddPhone extends Component {
       console.log("Add Phone", response.data);
       // update the state for our redirect
       this.setState({ isSubmitSuccessful: true });
+    });
+  }
+
+  uploadOnChange(event) {
+    const { name, files } = event.target;
+
+    postFile(files).then(response => {
+      console.log("Upload File Info", response.data);
+      this.setState({ [name]: response.data.fileUrl });
     });
   }
 
@@ -76,15 +85,14 @@ class AddPhone extends Component {
           </label>
 
           <label>
-            Image URL:{" "}
+            Image:{" "}
             <input
-              onChange={event => this.genericOnChange(event)}
-              value={this.state.image}
+              onChange={event => this.uploadOnChange(event)}
               name="image"
-              type="url"
-              placeholder="http://example.com"
+              type="file"
             />
           </label>
+          <img src={this.state.image} />
 
           <label>
             Specs:{" "}
