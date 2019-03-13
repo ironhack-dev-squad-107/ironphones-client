@@ -1,91 +1,81 @@
-import React, { Component } from "react";
+import React from "react";
 
 import "./SignupPage.css";
+import { useInputValue } from "../hooks/inputs.js";
 import { postSignUp } from "../api.js";
 
-class SignupPage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      fullName: "",
-      email: "",
-      originalPassword: ""
-    };
-  }
+function SignupPage(props) {
+  // useInputValue() is a custom hook I made for inputs you type in
+  // (this way we don't need to copy/paste the genericOnChange() function)
+  const [fullName, onFullNameChange] = useInputValue("");
+  const [email, onEmailChange] = useInputValue("");
+  const [originalPassword, onPasswordChange] = useInputValue("");
 
-  genericOnChange(event) {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  }
+  // currentUser is now sent by App.js as a prop
+  const { currentUser, signupSuccess } = props;
 
-  handleSubmit(event) {
+  // this function has to be INSIDE because it uses the state
+  function handleSubmit(event) {
     event.preventDefault();
 
-    postSignUp(this.state).then(response => {
+    postSignUp({ fullName, email, originalPassword }).then(response => {
       console.log("Sign Up Result", response.data);
       // use the method sent as a prop by App.js to update currentUser
-      this.props.signupSuccess(response.data);
+      signupSuccess(response.data);
     });
   }
 
-  render() {
-    // currentUser is now sent by App.js as a prop
-    const { currentUser } = this.props;
-    return (
-      <section className="SignupPage">
-        {currentUser ? (
-          <div>
-            <h2>You are signed up!</h2>
-            <p>
-              Welcome, {currentUser.fullName}! Your user ID is{" "}
-              <b>{currentUser._id}</b>.
-            </p>
-          </div>
-        ) : (
-          <div>
-            <h2>Sign Up</h2>
+  return (
+    <section className="SignupPage">
+      {currentUser ? (
+        <>
+          <h2>You are signed up!</h2>
+          <p>
+            Welcome, {currentUser.fullName}! Your user ID is{" "}
+            <b>{currentUser._id}</b>.
+          </p>
+        </>
+      ) : (
+        <>
+          <h2>Sign Up</h2>
 
-            <form onSubmit={event => this.handleSubmit(event)}>
-              <label>
-                Full Name:
-                <input
-                  onChange={event => this.genericOnChange(event)}
-                  value={this.state.fullName}
-                  name="fullName"
-                  type="text"
-                  placeholder="Rey"
-                />
-              </label>
+          <form onSubmit={handleSubmit}>
+            <label>
+              Full Name:
+              <input
+                onChange={onFullNameChange}
+                value={fullName}
+                type="text"
+                placeholder="Rey"
+              />
+            </label>
 
-              <label>
-                Email:
-                <input
-                  onChange={event => this.genericOnChange(event)}
-                  value={this.state.email}
-                  name="email"
-                  type="email"
-                  placeholder="rey@jedi.com"
-                />
-              </label>
+            <label>
+              Email:
+              <input
+                onChange={onEmailChange}
+                value={email}
+                type="email"
+                placeholder="rey@jedi.com"
+              />
+            </label>
 
-              <label>
-                Password:
-                <input
-                  onChange={event => this.genericOnChange(event)}
-                  value={this.state.originalPassword}
-                  name="originalPassword"
-                  type="password"
-                  placeholder="It's a secret..."
-                />
-              </label>
+            <label>
+              Password:
+              <input
+                onChange={onPasswordChange}
+                value={originalPassword}
+                type="password"
+                placeholder="It's a secret..."
+              />
+            </label>
 
-              <button>Sign Up</button>
-            </form>
-          </div>
-        )}
-      </section>
-    );
-  }
+            <button>Sign Up</button>
+          </form>
+        </>
+      )}
+    </section>
+  );
 }
 
 export default SignupPage;

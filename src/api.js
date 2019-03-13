@@ -55,12 +55,12 @@ export function getLogOut() {
   return backendApi.get("/api/logout").catch(errorHandler);
 }
 
-export function postFile(files) {
+export function postFile(file) {
   // create a FormData object that packages up the file for uploading
   const uploadData = new FormData();
   // add the first file to the uploadData "package"
   // (the name "userFile" is the one the backend is expecting)
-  uploadData.append("userFile", files[0]);
+  uploadData.append("userFile", file);
 
   return backendApi.post("/api/single-upload", uploadData).catch(errorHandler);
 }

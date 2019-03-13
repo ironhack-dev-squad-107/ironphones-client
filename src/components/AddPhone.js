@@ -1,115 +1,101 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
 import { Redirect } from "react-router-dom";
 
 import "./AddPhone.css";
-import { postPhone, postFile } from "../api.js";
+import { useInputValue, useInputFile } from "../hooks/inputs.js";
+import { postPhone } from "../api.js";
 
-class AddPhone extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      phoneModel: "",
-      brand: "",
-      price: "",
-      image: "",
-      specs: "",
-      isSubmitSuccessful: false
-    };
+function AddPhone() {
+  // useInputValue() is a custom hook I made for inputs you type in
+  // (this way we don't need to copy/paste the genericOnChange() function)
+  const [phoneModel, onPhoneModelChange] = useInputValue("");
+  const [brand, onBrandChange] = useInputValue("");
+  const [price, onPriceChange] = useInputValue("");
+  const [specs, onSpecsChange] = useInputValue("");
+
+  // useInputFile() is another custom hook specifically for file inputs
+  // (this way we don't need to copy/paste the uploadOnChange() function)
+  const [image, onImageChange] = useInputFile("");
+
+  // the useState() hook defines a piece of state and its setState() function
+  // (false is the initial state)
+  const [isSubmitSuccessful, setIsSubmitSuccessful] = useState(false);
+  if (isSubmitSuccessful) {
+    // a function component is a big render so we can return Redirect anywhere
+    // (we can only do our return after all of our hooks are declared)
+    return <Redirect to="/recent-phones" />;
   }
 
-  genericOnChange(event) {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  }
-
-  handleSubmit(event) {
+  // this function has to be INSIDE because it uses the state
+  function handleSubmit(event) {
     event.preventDefault();
 
-    // send this.state (user inputs) to the backend for SAVING!
-    postPhone(this.state).then(response => {
+    // send user inputs to the backend for SAVING!
+    postPhone({ phoneModel, brand, price, image, specs }).then(response => {
       console.log("Add Phone", response.data);
       // update the state for our redirect
-      this.setState({ isSubmitSuccessful: true });
+      setIsSubmitSuccessful(true);
     });
   }
 
-  uploadOnChange(event) {
-    const { name, files } = event.target;
+  return (
+    <section className="AddPhone">
+      <h2>Add a Phone</h2>
 
-    postFile(files).then(response => {
-      console.log("Upload File Info", response.data);
-      this.setState({ [name]: response.data.fileUrl });
-    });
-  }
+      {/* onSubmit doesn't need arrow functions since there's no this
+       * (also we don't have a state object so we don't need input names)
+       */}
+      <form onSubmit={handleSubmit}>
+        <label>
+          Model:
+          <input
+            onChange={onPhoneModelChange}
+            value={phoneModel}
+            type="text"
+            placeholder="iPhone Xs"
+          />
+        </label>
 
-  render() {
-    return this.state.isSubmitSuccessful ? (
-      // returning the <Redirect /> ONLY works inside RENDER
-      <Redirect to="/recent-phones" />
-    ) : (
-      <section className="AddPhone">
-        <h2>Add a Phone</h2>
+        <label>
+          Brand:
+          <input
+            onChange={onBrandChange}
+            value={brand}
+            type="text"
+            placeholder="Apple"
+          />
+        </label>
 
-        <form onSubmit={event => this.handleSubmit(event)}>
-          <label>
-            Model:{" "}
-            <input
-              onChange={event => this.genericOnChange(event)}
-              value={this.state.phoneModel}
-              name="phoneModel"
-              type="text"
-              placeholder="iPhone Xs"
-            />
-          </label>
+        <label>
+          Price:
+          <input
+            onChange={onPriceChange}
+            value={price}
+            type="number"
+            placeholder="1155"
+          />
+        </label>
 
-          <label>
-            Brand:{" "}
-            <input
-              onChange={event => this.genericOnChange(event)}
-              value={this.state.brand}
-              name="brand"
-              type="text"
-              placeholder="Apple"
-            />
-          </label>
+        <label>
+          Image:
+          <input onChange={onImageChange} type="file" />
+        </label>
+        <img src={image} alt={phoneModel} />
 
-          <label>
-            Price:{" "}
-            <input
-              onChange={event => this.genericOnChange(event)}
-              value={this.state.price}
-              name="price"
-              type="number"
-              placeholder="1155"
-            />
-          </label>
+        <label>
+          Specs:
+          <input
+            onChange={onSpecsChange}
+            value={specs}
+            type="text"
+            placeholder="great camera, 8 hour battery"
+          />
+        </label>
 
-          <label>
-            Image:{" "}
-            <input
-              onChange={event => this.uploadOnChange(event)}
-              name="image"
-              type="file"
-            />
-          </label>
-          <img src={this.state.image} />
-
-          <label>
-            Specs:{" "}
-            <input
-              onChange={event => this.genericOnChange(event)}
-              value={this.state.specs}
-              name="specs"
-              type="text"
-              placeholder="great camera, 8 hour battery"
-            />
-          </label>
-
-          <button>Submit This Phone</button>
-        </form>
-      </section>
-    );
-  }
+        <button>Submit This Phone</button>
+      </form>
+    </section>
+  );
 }
 
 export default AddPhone;
